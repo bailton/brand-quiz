@@ -24,11 +24,48 @@
         .hero { text-align: center; margin-bottom: 2rem; }
         .hero h1 { font-size: 2.2rem; background: linear-gradient(135deg, #1e2f3e, #2c7da0); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 0.5rem; }
         .hero p { color: #4a627a; margin-bottom: 1.5rem; }
-        .feature-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin: 1.5rem 0; }
+        .feature-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin: 1.5rem 0; }
         .feature-tag { background: #eef2f5; padding: 6px 16px; border-radius: 40px; font-size: 0.85rem; color: #2c7da0; }
         .start-btn { background: #2c7da0; color: white; border: none; padding: 14px 40px; font-size: 1.2rem; font-weight: 600; border-radius: 60px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(44,125,160,0.3); margin-top: 0.5rem; }
         .start-btn:hover { background: #1f607e; transform: translateY(-2px); }
-        .info-text { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e2edf2; color: #6c86a0; font-size: 0.85rem; }
+        
+        /* 概念速查表样式 */
+        .recap-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #e2edf2;
+            text-align: left;
+        }
+        .recap-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e2f3e;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .recap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.8rem;
+        }
+        .recap-item {
+            background: #f8fafd;
+            padding: 10px 14px;
+            border-radius: 16px;
+            border-left: 4px solid #2c7da0;
+            font-size: 0.85rem;
+        }
+        .recap-term {
+            font-weight: 700;
+            color: #2c7da0;
+            margin-right: 8px;
+        }
+        .recap-def {
+            color: #4a627a;
+        }
+        
         .progress-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(8px);
@@ -68,7 +105,8 @@
         .mistake-detail { font-size: 0.8rem; color: #4a5568; margin-top: 6px; line-height: 1.4; }
         .badge-mistake { background: #d45a4a20; color: #bc5a2c; padding: 2px 10px; border-radius: 30px; font-size: 0.7rem; display: inline-block; margin-bottom: 6px; }
         .new-quiz-btn { background: #2c7da0; margin-top: 20px; }
-        @media (max-width: 600px) { .card { padding: 1.2rem; } .hero h1 { font-size: 1.6rem; } .q-text { font-size: 1.1rem; } }
+        .complete-btn { background: #2c8c5a; }
+        @media (max-width: 600px) { .card { padding: 1.2rem; } .hero h1 { font-size: 1.6rem; } .q-text { font-size: 1.1rem; } .recap-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -76,12 +114,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
 <script>
-    // 概念列表
     const CONCEPT_LIST = ["品牌形象", "品牌曝光率", "品牌存在感", "品牌知名度", "品牌联想", "品牌资产", "品牌信任"];
     
-    // 权威修正版50题（基于营销学经典理论）
     const FULL_QUESTIONS = [
-        // 品牌形象（B1-B10）
         { text: "很多人认为劳斯莱斯代表着“尊贵、奢华、稀有”。", correct: ["品牌形象","品牌联想"], explanation: "劳斯莱斯的尊贵印象是消费者主观形成的整体形象（品牌形象），同时也构成了“尊贵”这个属性联想（品牌联想）。" },
         { text: "沃尔沃汽车多年来被消费者公认为“最安全的汽车”。", correct: ["品牌形象","品牌联想"], explanation: "安全是沃尔沃在消费者心中的核心形象特征，也是安全属性的品牌联想。" },
         { text: "苹果用户觉得iPhone的设计“简约、高级、有科技感”。", correct: ["品牌形象"], explanation: "这是消费者对苹果品牌的主观整体印象，属于品牌形象。" },
@@ -92,8 +127,6 @@
         { text: "红牛功能饮料给人的感觉是“极限、活力、挑战”。", correct: ["品牌形象"], explanation: "红牛通过极限运动营销塑造的品牌个性形象。" },
         { text: "全聚德烤鸭在游客心中是“北京老字号、正宗”。", correct: ["品牌形象"], explanation: "老字号正宗的印象属于品牌形象。" },
         { text: "野兽派花店让人感觉“文艺、精致、有格调”。", correct: ["品牌形象"], explanation: "品牌通过店铺设计和包装营造的形象感知。" },
-
-        // 品牌曝光率（E1-E10）
         { text: "麦当劳在上海所有地铁站投放了为期一个月的灯箱广告，每天被100万人次看到。", correct: ["品牌曝光率"], explanation: "描述的是广告投放的频率和覆盖人次，属于客观曝光次数。" },
         { text: "某新品牌在抖音一天内投放了5000条达人短视频，总播放量达到2亿次。", correct: ["品牌曝光率"], explanation: "播放量和投放数量都是曝光频率的直接体现。" },
         { text: "康师傅绿茶在超市货架上占据了最显眼的位置，每个进店顾客都会经过。", correct: ["品牌曝光率"], explanation: "货架位置带来的被动视觉接触是线下曝光率的重要形式。" },
@@ -104,8 +137,6 @@
         { text: "某品牌在小红书铺了10000篇素人笔记，搜索品牌名时全屏都是。", correct: ["品牌曝光率"], explanation: "小红书笔记数量是平台内的曝光密度。" },
         { text: "你刷微博时连续刷到3条同一个护肤品的开屏广告。", correct: ["品牌曝光率"], explanation: "广告重复出现是典型的曝光频率增加。" },
         { text: "机场行李转盘上的LED屏每30秒轮播一次某奢侈品牌的广告。", correct: ["品牌曝光率"], explanation: "广告循环播放是曝光率的实现方式。" },
-
-        // 品牌存在感（P1-P10）- 严格限定“需求/场景触发”
         { text: "当你想吃火锅时，脑海中第一个跳出来的品牌是海底捞。", correct: ["品牌存在感"], explanation: "特定场景（想吃火锅）下首先想到的品牌，是存在感的典型表现。触发点是内在需求，而非外部符号。" },
         { text: "口渴想买水时，你不假思索地拿了农夫山泉。", correct: ["品牌存在感"], explanation: "消费场景下的下意识选择说明品牌存在感极强。触发点是口渴需求。" },
         { text: "提到“豪华电动车”，消费者首先想到的是特斯拉，而不是宝马或奔驰。", correct: ["品牌存在感","品牌知名度"], explanation: "品类首想关联是存在感+高知名度的双重体现。触发点是品类概念。" },
@@ -116,15 +147,11 @@
         { text: "周末想找个地方喝下午茶，你立刻想到了“星巴克”。", correct: ["品牌存在感"], explanation: "休闲场景下的品牌首选，触发点是下午茶需求。" },
         { text: "家里纸巾用完了要去买，你脱口而出“买洁柔”。", correct: ["品牌存在感"], explanation: "补货需求触发品牌回忆，是存在感的体现。" },
         { text: "想买礼物送长辈，第一个想到“脑白金”。", correct: ["品牌存在感"], explanation: "特定送礼场景下的品牌首选，触发点是礼物需求。" },
-
-        // 品牌知名度（A1-A5）- 严格限定“是否知道品牌存在”
         { text: "市场调研中，85%的受访者表示“听说过”农夫山泉这个品牌。", correct: ["品牌知名度"], explanation: "“听说过”是知名度（提示认知）的核心测量指标，不涉及属性知识。" },
         { text: "在未经任何提示的情况下，42%的消费者能说出“国产运动品牌第一是安踏”。", correct: ["品牌知名度","品牌存在感"], explanation: "未提示下能被回忆属于高知名度+品类首位存在感。" },
         { text: "一个从未投放过广告的小众设计师品牌，只有业内少数人知道。", correct: ["品牌知名度"], explanation: "知道的人少意味着知名度低。" },
         { text: "提到“碳酸饮料”，98%的消费者能说出“可口可乐”。", correct: ["品牌知名度","品牌存在感"], explanation: "品类提示下的高回忆率是知名度+存在感的共同体现。" },
         { text: "你问一个农村老人知道“华为”吗？他说“听过，做手机的”。", correct: ["品牌知名度"], explanation: "仅知道品牌存在和基础品类，属于知名度范畴。不涉及具体属性联想。" },
-
-        // 品牌联想（C1-C10）- 严格限定“外部线索触发”
         { text: "看到“怕上火喝XXX”，99%的人能自动补全“王老吉”（或加多宝）。", correct: ["品牌联想"], explanation: "广告语与品牌之间的强语义联想。触发点是外部文字刺激。" },
         { text: "“Just Do It”这句口号让人立刻想到Nike。", correct: ["品牌联想"], explanation: "口号与品牌之间的经典联想。触发点是外部口号刺激。" },
         { text: "提起“钻石”，很多人会想到De Beers的“钻石恒久远，一颗永流传”。", correct: ["品牌联想"], explanation: "品类属性与品牌之间的深度绑定联想。触发点是品类词刺激。" },
@@ -135,15 +162,11 @@
         { text: "你问一个5岁小孩“可口可乐是什么颜色的”，他能回答“红色”。", correct: ["品牌联想"], explanation: "知道品牌的基本属性（颜色）属于品牌联想（可口可乐与红色之间的属性联想），而不仅仅是“听说过”品牌。" },
         { text: "看到黄色拱门形状，你就知道那是麦当劳。", correct: ["品牌联想"], explanation: "视觉符号与品牌之间的联想。触发点是外部符号。" },
         { text: "听到“灯厂”两个字，车迷立刻想到奥迪。", correct: ["品牌联想"], explanation: "绰号与品牌之间的属性联想。" },
-
-        // 品牌资产（V1-V5）
         { text: "即使华为手机卖得比小米贵，很多人仍然愿意购买华为。", correct: ["品牌资产"], explanation: "品牌带来的溢价能力是品牌资产的核心体现。" },
         { text: "闲鱼上，一个绝版的肯德基儿童套餐玩具能卖出原价10倍的价格。", correct: ["品牌资产"], explanation: "品牌衍生品的收藏溢价是品牌资产的变现。" },
         { text: "可口可乐曾经声称：就算全球工厂被烧，凭“可口可乐”四个字也能重新站起来。", correct: ["品牌资产"], explanation: "品牌的财务价值和商誉价值是品牌资产的核心。" },
         { text: "同一件白T恤，印上Supreme的Logo价格翻5倍，并且还有人排队买。", correct: ["品牌资产"], explanation: "Logo本身带来的溢价能力是品牌资产的直接证据。" },
         { text: "你和朋友打赌说“麦当劳未来10年绝不会倒闭”，因为你相信它的品牌价值。", correct: ["品牌资产"], explanation: "品牌带来的忠诚度和市场稳定性是品牌资产的一部分。" },
-
-        // 品牌信任（T1-T5）
         { text: "你妈妈买洗衣粉只认雕牌，说“别的牌子洗不干净，也不放心”。", correct: ["品牌信任"], explanation: "长期使用形成的可靠性信赖是品牌信任的典型表现。" },
         { text: "某奶粉品牌出现质量问题后公开召回并赔偿，消费者在评论区说“态度诚恳，还会继续支持”。", correct: ["品牌信任"], explanation: "危机后仍愿原谅和支持说明品牌信任基础牢固。" },
         { text: "三聚氰胺事件后，很多家长至今不敢买某个国产奶粉品牌。", correct: ["品牌信任"], explanation: "信任一旦被破坏会持续影响消费者选择。" },
@@ -167,6 +190,7 @@
         el: '#app',
         template: `
             <div>
+                <!-- 主页 -->
                 <div v-if="mode === 'home'" class="card">
                     <div class="hero">
                         <h1>📊 品牌营销概念测试</h1>
@@ -179,18 +203,30 @@
                             <span class="feature-tag">✅ 答案经专业校准</span>
                         </div>
                         <button class="start-btn" @click="startNewQuiz">✨ 开始随机测试 ✨</button>
-                        <div class="info-text">
-                            ⚡ 共50道权威题库，每次随机抽取10题<br>
-                            📖 完成测试后自动记录错题，可反复开始新测试<br>
-                            🎓 答案基于营销学经典理论（科特勒/Aaker）
+                        
+                        <!-- 概念速查表 Recap -->
+                        <div class="recap-section">
+                            <div class="recap-title">
+                                <span>📖</span> 概念速查表 <span style="font-size:0.75rem; font-weight:normal; color:#6c86a0;">（答题前先复习）</span>
+                            </div>
+                            <div class="recap-grid">
+                                <div class="recap-item"><span class="recap-term">品牌存在感：</span><span class="recap-def">需求/场景 → 想到品牌（内驱力）</span></div>
+                                <div class="recap-item"><span class="recap-term">品牌联想：</span><span class="recap-def">外部刺激 → 想到品牌（外线索）</span></div>
+                                <div class="recap-item"><span class="recap-term">品牌知名度：</span><span class="recap-def">知道品牌存在（不涉及属性）</span></div>
+                                <div class="recap-item"><span class="recap-term">品牌形象：</span><span class="recap-def">整体主观印象（个性、情感）</span></div>
+                                <div class="recap-item"><span class="recap-term">品牌资产：</span><span class="recap-def">商业价值（溢价、忠诚）</span></div>
+                                <div class="recap-item"><span class="recap-term">品牌曝光率：</span><span class="recap-def">出现频率（客观次数）</span></div>
+                                <div class="recap-item"><span class="recap-term">品牌信任：</span><span class="recap-def">可靠性感知（放心、诚信）</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div v-else-if="mode === 'quiz' && !quizFinished">
+                <!-- 测试界面 -->
+                <div v-else-if="mode === 'quiz'">
                     <div class="progress-card">
                         <div class="counter">第 {{ currentIndex+1 }} / {{ totalQuestions }} 题</div>
-                        <div class="score-box">✅ 得分: {{ correctCount }} / {{ answeredCount }}</div>
+                        <div class="score-box">✅ 得分: {{ computedCorrectCount }} / {{ computedAnsweredCount }}</div>
                         <button class="exit-btn" @click="exitToHome">🏠 退出</button>
                     </div>
                     <div class="card">
@@ -211,17 +247,19 @@
                             <span>✅ 正确答案: {{ currentQuestion.correct.join('、') }}</span><br>
                             <span>📘 {{ currentQuestion.explanation }}</span>
                         </div>
-                        <div v-if="showFeedback" class="nav-buttons">
+                        <div class="nav-buttons">
                             <button @click="prevQuestion" :disabled="currentIndex === 0">◀ 上一题</button>
-                            <button @click="nextQuestion" :disabled="currentIndex === totalQuestions-1">下一题 ▶</button>
+                            <button v-if="currentIndex < totalQuestions-1" @click="nextQuestion" :disabled="!submitted">下一题 ▶</button>
+                            <button v-if="currentIndex === totalQuestions-1 && !quizCompleted" @click="finishQuiz" :disabled="!submitted" class="complete-btn">📊 完成测试</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- 成绩单 -->
                 <div v-else-if="mode === 'result'" class="card final-score-card">
                     <h2>🎉 测试完成 🎉</h2>
-                    <p style="font-size: 1.8rem; margin: 20px 0; font-weight: 700;">{{ correctCount }} / {{ totalQuestions }}</p>
-                    <p>正确率: {{ Math.round(correctCount/totalQuestions*100) }}%</p>
+                    <p style="font-size: 1.8rem; margin: 20px 0; font-weight: 700;">{{ computedCorrectCount }} / {{ totalQuestions }}</p>
+                    <p>正确率: {{ Math.round(computedCorrectCount/totalQuestions*100) }}%</p>
                     
                     <div v-if="mistakeList.length > 0" class="mistake-list">
                         <h3 style="margin-bottom: 16px; color:#bc5a2c;">📋 错题本（{{ mistakeList.length }} 道）</h3>
@@ -237,7 +275,7 @@
                     </div>
                     <div v-else style="margin-top: 24px; padding: 20px; background: #e8f5e9; border-radius: 28px;">🎉 太棒了！全对！概念掌握非常扎实。</div>
                     
-                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
                         <button class="new-quiz-btn" @click="startNewQuiz">🎲 新的一组随机题</button>
                         <button class="secondary" @click="exitToHome">🏠 返回主页</button>
                     </div>
@@ -259,21 +297,21 @@
         },
         computed: {
             totalQuestions() { return this.currentQuestions.length; },
-            answeredCount() {
+            computedAnsweredCount() {
                 let count = 0;
                 for (let i = 0; i < this.answerStatus.length; i++) {
                     if (this.answerStatus[i] !== undefined) count++;
                 }
                 return count;
             },
-            correctCount() {
+            computedCorrectCount() {
                 let count = 0;
                 for (let i = 0; i < this.answerStatus.length; i++) {
                     if (this.answerStatus[i] === true) count++;
                 }
                 return count;
             },
-            quizFinished() {
+            quizCompleted() {
                 if (this.totalQuestions === 0) return false;
                 for (let i = 0; i < this.totalQuestions; i++) {
                     if (this.answerStatus[i] === undefined) return false;
@@ -314,11 +352,6 @@
                     this.showFeedback = false;
                     this.isCurrentCorrect = false;
                     this.submitted = false;
-                }
-            },
-            quizFinished(val) {
-                if (val && this.mode === 'quiz') {
-                    this.mode = 'result';
                 }
             }
         },
@@ -371,6 +404,13 @@
             },
             prevQuestion() {
                 if (this.currentIndex > 0) this.currentIndex--;
+            },
+            finishQuiz() {
+                if (this.quizCompleted) {
+                    this.mode = 'result';
+                } else {
+                    alert("请先完成所有题目再提交");
+                }
             },
             exitToHome() {
                 if (confirm("返回主页会丢失当前测试进度，确定吗？")) {
