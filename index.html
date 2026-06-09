@@ -18,13 +18,11 @@
             color: #1a2c3e;
         }
 
-        /* 主容器 */
         .test-container {
             max-width: 900px;
             margin: 0 auto;
         }
 
-        /* 头部进度卡 */
         .progress-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(8px);
@@ -56,14 +54,12 @@
             font-size: 0.95rem;
         }
 
-        /* 题目卡片 */
         .question-card {
             background: white;
             border-radius: 2rem;
             padding: 2rem 1.8rem;
             margin-bottom: 1.8rem;
             box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.12);
-            transition: all 0.2s;
             border: 1px solid rgba(0,0,0,0.03);
         }
 
@@ -164,6 +160,12 @@
             transform: translateY(-1px);
         }
 
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .result-area {
             margin-top: 20px;
             padding: 18px;
@@ -183,13 +185,6 @@
             color: #bc5a2c;
         }
 
-        hr {
-            margin: 24px 0;
-            border: none;
-            height: 2px;
-            background: linear-gradient(to right, #cbdde9, transparent);
-        }
-
         .final-score-card {
             background: white;
             border-radius: 2rem;
@@ -202,6 +197,13 @@
         .reset-btn {
             background: #1f607e;
             margin-top: 20px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 12px;
         }
 
         @media (max-width: 600px) {
@@ -224,9 +226,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
 <script>
-    // ----------------------------- 题库数据（基于之前提供的50题，全部整理并匹配正确概念）-------------------
-    // 每个题目包含: text, options(展示用选项列表), correct(正确答案数组), explanation
-    // 注意: 选项统一使用以下核心概念池，部分题目可多选
+    // 概念列表
     const CONCEPT_LIST = ["品牌形象", "品牌曝光率", "品牌存在感", "品牌知名度", "品牌联想", "品牌资产", "品牌信任/好感"];
     
     const questionsData = [
@@ -282,20 +282,15 @@
         { text: "“疫情期间，某本地烘焙品牌组织‘免费送面包给医护人员’活动，大众点评出现500条好评提及‘良心商家’。”", options: CONCEPT_LIST, correct: ["品牌信任/好感","品牌形象"], explanation: "公益行为塑造信任与正向形象。" }
     ];
     
-    // 确保题目总数是50
-    console.log("题库数量:", questionsData.length);
-    
-    // Vue 应用程序
     new Vue({
         el: '#app',
         template: `
             <div class="test-container">
                 <div class="progress-card">
                     <div class="counter">第 {{ currentIndex+1 }} / {{ totalQuestions }} 题</div>
-                    <div class="score-box">✅ 当前得分: {{ userScore }} / {{ answeredCount }}</div>
+                    <div class="score-box">✅ 得分: {{ userScore }} / {{ answeredCount }}</div>
                 </div>
 
-                <!-- 未完成时展示题目 -->
                 <div v-if="!quizFinished">
                     <div class="question-card">
                         <div class="badge-hint">⚡ 可多选（根据概念匹配）</div>
@@ -307,152 +302,128 @@
                             </div>
                         </div>
                         <div class="action-buttons">
-                            <button @click="submitAnswer">✓ 提交本题</button>
-                            <button class="secondary" @click="clearCurrent">↺ 重置选项</button>
+                            <button @click="submitAnswer" :disabled="submitted">✓ 提交本题</button>
+                            <button class="secondary" @click="clearCurrent" :disabled="submitted">↺ 重置选项</button>
                         </div>
                         <div v-if="showFeedback" class="result-area" :class="{'correct-feedback': isCurrentCorrect, 'wrong-feedback': !isCurrentCorrect}">
                             <strong>{{ isCurrentCorrect ? '✓ 回答正确' : '✗ 回答有误' }}</strong><br>
                             <span>✅ 正确答案: {{ currentQuestion.correct.join('、') }}</span><br>
                             <span>📘 解析: {{ currentQuestion.explanation }}</span>
                         </div>
+                        <!-- 明显且强制性的下一题按钮 -->
+                        <div v-if="showFeedback" class="nav-buttons">
+                            <button @click="prevQuestion" :disabled="currentIndex === 0">◀ 上一题</button>
+                            <button @click="nextQuestion" :disabled="currentIndex === totalQuestions-1">下一题 ▶</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 最终成绩单 -->
                 <div v-else class="final-score-card">
                     <h2>🎉 测试完成 🎉</h2>
                     <p style="font-size: 1.8rem; margin: 20px 0; font-weight: 700;">{{ userScore }} / {{ totalQuestions }}</p>
-                    <p style="margin-bottom: 20px;">正确率: {{ Math.round(userScore/totalQuestions*100) }}%</p>
+                    <p>正确率: {{ Math.round(userScore/totalQuestions*100) }}%</p>
                     <div style="background:#eef2f7; padding: 16px; border-radius: 32px; text-align: left;">
-                        <p><strong>概念速记小贴士：</strong></p>
-                        <p>📌 品牌形象 = 主观印象/个性/价值观<br>
-                        📌 品牌曝光率 = 出现次数/频率/媒介触达<br>
-                        📌 品牌存在感 = 场景触发/心智唤醒/品类联想<br>
-                        📌 品牌资产 = 溢价/忠诚/品牌带来的商业价值<br>
-                        📌 品牌联想 = 属性/情感绑定<br>
-                        📌 品牌信任/好感 = 可靠性/好感度</p>
+                        <p><strong>📌 概念速记小贴士</strong></p>
+                        <p>▪ 品牌形象 = 主观印象/个性/价值观<br>
+                        ▪ 品牌曝光率 = 出现次数/频率/媒介触达<br>
+                        ▪ 品牌存在感 = 场景触发/心智唤醒/品类联想<br>
+                        ▪ 品牌资产 = 溢价/忠诚/品牌带来的商业价值<br>
+                        ▪ 品牌联想 = 属性/情感绑定<br>
+                        ▪ 品牌信任/好感 = 可靠性/好感度</p>
                     </div>
-                    <button class="reset-btn" @click="restartQuiz">🔄 重新测试</button>
-                </div>
-
-                <!-- 底部导航 仅在未完成时 -->
-                <div v-if="!quizFinished && answeredCount > 0 && showFeedback" style="display: flex; justify-content: space-between; margin-top: 10px;">
-                    <button class="secondary" @click="prevQuestion" :disabled="currentIndex === 0">◀ 上一题</button>
-                    <button @click="nextQuestion" :disabled="currentIndex === totalQuestions-1">下一题 ▶</button>
-                </div>
-                <div v-if="!quizFinished && !showFeedback && answeredCount > 0" style="margin-top: 12px;">
-                    <button class="secondary" @click="nextQuestion">跳过 / 下一题</button>
+                    <button class="reset-btn" @click="restartQuiz">🔄 重新开始</button>
                 </div>
             </div>
         `,
         data() {
             return {
-                questions: questionsData,     // 50题
+                questions: questionsData,
                 currentIndex: 0,
-                userAnswers: [],              // 存储每道题用户选的数组 (选中的概念)
-                answerStatus: [],             // 存储每道题是否正确 true/false
-                userScore: 0,                 // 总分 (正确题目计数)
-                selectedForCurrent: [],       // 当前题目勾选的选项
+                userAnswers: [],
+                answerStatus: [],
+                userScore: 0,
+                selectedForCurrent: [],
                 showFeedback: false,
                 isCurrentCorrect: false,
-                quizFinished: false
+                quizFinished: false,
+                submitted: false
             };
         },
         computed: {
-            totalQuestions() {
-                return this.questions.length;
-            },
-            currentQuestion() {
-                return this.questions[this.currentIndex];
-            },
-            answeredCount() {
-                // 已经回答的题目数（不论对错）
-                return this.userAnswers.filter(a => a !== undefined && a.length > 0).length;
-            }
+            totalQuestions() { return this.questions.length; },
+            currentQuestion() { return this.questions[this.currentIndex]; },
+            answeredCount() { return this.userAnswers.filter(a => a !== undefined && a.length > 0).length; }
         },
         watch: {
             currentIndex(newIdx) {
-                // 切换题目时候，加载已保存的答案
+                // 重置提交状态
+                this.submitted = false;
                 if (this.userAnswers[newIdx]) {
                     this.selectedForCurrent = [...this.userAnswers[newIdx]];
+                    this.showFeedback = true;
+                    this.isCurrentCorrect = this.answerStatus[newIdx];
+                    this.submitted = true;
                 } else {
                     this.selectedForCurrent = [];
-                }
-                this.showFeedback = this.answerStatus[newIdx] !== undefined;
-                if (this.showFeedback) {
-                    this.isCurrentCorrect = this.answerStatus[newIdx];
-                } else {
+                    this.showFeedback = false;
                     this.isCurrentCorrect = false;
+                    this.submitted = false;
                 }
             }
         },
         methods: {
             toggleOption(opt) {
-                // 多选逻辑：如果已选中则移除，否则添加
+                if (this.submitted) return;
                 const idx = this.selectedForCurrent.indexOf(opt);
-                if (idx === -1) {
-                    this.selectedForCurrent.push(opt);
-                } else {
-                    this.selectedForCurrent.splice(idx, 1);
-                }
+                if (idx === -1) this.selectedForCurrent.push(opt);
+                else this.selectedForCurrent.splice(idx, 1);
             },
             clearCurrent() {
+                if (this.submitted) return;
                 this.selectedForCurrent = [];
             },
             submitAnswer() {
+                if (this.submitted) {
+                    alert("本题已经提交过了，可以进入下一题");
+                    return;
+                }
                 if (this.selectedForCurrent.length === 0) {
                     alert("请至少选择一个选项，本题可能是多选。");
                     return;
                 }
                 const currentQ = this.currentQuestion;
-                const correctArr = currentQ.correct;
-                // 比较两个数组（忽略顺序，内容完全一致）
                 const userSorted = [...this.selectedForCurrent].sort();
-                const correctSorted = [...correctArr].sort();
-                let isCorrect = userSorted.length === correctSorted.length && userSorted.every((val, idx) => val === correctSorted[idx]);
+                const correctSorted = [...currentQ.correct].sort();
+                const isCorrect = userSorted.length === correctSorted.length && userSorted.every((val, idx) => val === correctSorted[idx]);
                 
-                // 保存答案和状态
                 this.userAnswers[this.currentIndex] = [...this.selectedForCurrent];
-                const wasAlreadyAnswered = this.answerStatus[this.currentIndex] !== undefined;
-                const oldCorrect = this.answerStatus[this.currentIndex];
-                
                 this.answerStatus[this.currentIndex] = isCorrect;
                 this.showFeedback = true;
                 this.isCurrentCorrect = isCorrect;
+                this.submitted = true;
                 
-                // 更新总分：重新计算所有正确个数
                 let newScore = 0;
                 for (let i = 0; i < this.totalQuestions; i++) {
                     if (this.answerStatus[i] === true) newScore++;
                 }
                 this.userScore = newScore;
                 
-                // 自动检查是否完成了所有题目（每道题都有answerStatus）
                 const allDone = this.answerStatus.length === this.totalQuestions && this.answerStatus.every(status => status !== undefined);
-                if (allDone) {
-                    this.quizFinished = true;
-                }
+                if (allDone) this.quizFinished = true;
             },
             nextQuestion() {
                 if (this.currentIndex < this.totalQuestions - 1) {
                     this.currentIndex++;
                 } else {
-                    // 已经是最后一题，检查是否全部已答，若全部答完结束测试
                     const allAnswered = this.answerStatus.length === this.totalQuestions && this.answerStatus.every(s => s !== undefined);
-                    if (allAnswered) {
-                        this.quizFinished = true;
-                    } else {
-                        alert("请先完成当前未答题目，再完成所有题后会自动结束。");
-                    }
+                    if (allAnswered) this.quizFinished = true;
+                    else alert("请先完成当前未答题目。");
                 }
             },
             prevQuestion() {
-                if (this.currentIndex > 0) {
-                    this.currentIndex--;
-                }
+                if (this.currentIndex > 0) this.currentIndex--;
             },
             restartQuiz() {
-                // 重置所有状态
                 this.currentIndex = 0;
                 this.userAnswers = [];
                 this.answerStatus = [];
@@ -461,12 +432,8 @@
                 this.showFeedback = false;
                 this.isCurrentCorrect = false;
                 this.quizFinished = false;
+                this.submitted = false;
             }
-        },
-        mounted() {
-            // 初始化第一个题目
-            this.selectedForCurrent = [];
-            this.showFeedback = false;
         }
     });
 </script>
