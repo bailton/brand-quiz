@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>品牌营销概念辨析测试 | 50题挑战</title>
+    <title>品牌营销概念测试 | 随机10题模式</title>
     <style>
         * {
             margin: 0;
@@ -16,55 +16,119 @@
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             padding: 24px 20px;
             color: #1a2c3e;
+            min-height: 100vh;
         }
 
-        .test-container {
+        .app-container {
             max-width: 1000px;
             margin: 0 auto;
         }
 
+        /* 卡片通用样式 */
+        .card {
+            background: white;
+            border-radius: 2rem;
+            padding: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        /* 主页样式 */
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .hero h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #1e2f3e, #2c7da0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .hero p {
+            color: #4a627a;
+            margin-bottom: 1.5rem;
+        }
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .feature-tag {
+            background: #eef2f5;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            color: #2c7da0;
+        }
+        .start-btn {
+            background: #2c7da0;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(44,125,160,0.3);
+            margin-top: 0.5rem;
+        }
+        .start-btn:hover {
+            background: #1f607e;
+            transform: translateY(-2px);
+        }
+        .info-text {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2edf2;
+            color: #6c86a0;
+            font-size: 0.85rem;
+        }
+
+        /* 测试界面样式 */
         .progress-card {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(8px);
             border-radius: 48px;
-            padding: 18px 28px;
-            margin-bottom: 28px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            padding: 14px 24px;
+            margin-bottom: 24px;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: baseline;
             border: 1px solid rgba(255,255,255,0.6);
         }
-
         .score-box {
             background: #1e2f3e;
             color: white;
-            padding: 8px 18px;
+            padding: 6px 16px;
             border-radius: 60px;
             font-weight: 600;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
-
         .counter {
             font-weight: 500;
             background: #ffffffcc;
             padding: 6px 16px;
             border-radius: 40px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
-
-        .question-card {
-            background: white;
-            border-radius: 2rem;
-            padding: 2rem 1.8rem;
-            margin-bottom: 1.8rem;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.12);
-            border: 1px solid rgba(0,0,0,0.03);
+        .exit-btn {
+            background: #cfdee9;
+            color: #1e3b4a;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
         }
-
         .q-text {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 600;
             line-height: 1.4;
             margin-bottom: 1.2rem;
@@ -73,7 +137,6 @@
             border-radius: 1.5rem;
             border-left: 5px solid #2c7da0;
         }
-
         .badge-hint {
             font-size: 0.75rem;
             background: #eef2f5;
@@ -84,133 +147,95 @@
             color: #2c7da0;
             font-weight: 500;
         }
-
         .options-area {
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            margin: 28px 0 24px;
+            gap: 12px;
+            margin: 24px 0 20px;
         }
-
         .option-item {
             display: flex;
             align-items: center;
             gap: 14px;
             background: #f8fafd;
-            padding: 12px 18px;
+            padding: 10px 16px;
             border-radius: 60px;
             border: 1px solid #e2edf2;
             transition: all 0.2s;
             cursor: pointer;
         }
-
         .option-item:hover {
             background: #eef3fc;
             border-color: #a0c4d9;
         }
-
         .option-item input {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             accent-color: #2c7da0;
             cursor: pointer;
-            flex-shrink: 0;
         }
-
         .option-item label {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 500;
             color: #1e2f3e;
             cursor: pointer;
             flex: 1;
         }
-
         .action-buttons {
             display: flex;
-            gap: 16px;
-            margin-top: 12px;
+            gap: 12px;
+            margin-top: 8px;
             flex-wrap: wrap;
         }
-
         button {
             border: none;
             background: #2c7da0;
             color: white;
             font-weight: 600;
-            padding: 12px 28px;
+            padding: 10px 24px;
             border-radius: 40px;
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: 0.2s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
-
         button.secondary {
             background: #cfdee9;
             color: #1e3b4a;
-            box-shadow: none;
         }
-
         button.secondary:hover {
             background: #bdd0df;
         }
-
         button:hover {
             background: #1f607e;
-            transform: translateY(-1px);
         }
-
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
-
         .result-area {
-            margin-top: 20px;
-            padding: 18px;
+            margin-top: 18px;
+            padding: 16px;
             background: #eef4fa;
-            border-radius: 28px;
-            border-left: 6px solid #2c7da0;
-            font-size: 0.95rem;
+            border-radius: 24px;
+            border-left: 5px solid #2c7da0;
+            font-size: 0.9rem;
             line-height: 1.5;
         }
-
-        .correct-feedback {
-            border-left-color: #2c8c5a;
-            background: #e6f4ed;
-        }
-        .wrong-feedback {
-            border-left-color: #d45a4a;
-            background: #fef2f0;
-        }
-
-        .final-score-card {
-            background: white;
-            border-radius: 2rem;
-            padding: 2rem;
-            text-align: center;
-            margin-top: 20px;
-            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.1);
-        }
-
-        .reset-btn {
-            background: #1f607e;
-            margin-top: 20px;
-        }
-
+        .correct-feedback { border-left-color: #2c8c5a; background: #e6f4ed; }
+        .wrong-feedback { border-left-color: #d45a4a; background: #fef2f0; }
         .nav-buttons {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
+            margin-top: 18px;
             gap: 12px;
         }
-
-        /* 错题本样式 */
+        .final-score-card {
+            text-align: center;
+        }
         .mistake-list {
             text-align: left;
             margin-top: 24px;
-            max-height: 500px;
+            max-height: 450px;
             overflow-y: auto;
             border-top: 2px solid #e2edf2;
             padding-top: 20px;
@@ -218,21 +243,21 @@
         .mistake-item {
             background: #fff8f0;
             border-left: 4px solid #d45a4a;
-            padding: 16px;
-            margin-bottom: 16px;
-            border-radius: 16px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            padding: 14px;
+            margin-bottom: 14px;
+            border-radius: 14px;
         }
         .mistake-question {
             font-weight: 700;
             margin-bottom: 8px;
             color: #bc5a2c;
+            font-size: 0.9rem;
         }
         .mistake-detail {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #4a5568;
-            margin-top: 8px;
-            line-height: 1.5;
+            margin-top: 6px;
+            line-height: 1.4;
         }
         .badge-mistake {
             background: #d45a4a20;
@@ -241,94 +266,125 @@
             border-radius: 30px;
             font-size: 0.7rem;
             display: inline-block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
-
+        .new-quiz-btn {
+            background: #2c7da0;
+            margin-top: 20px;
+        }
         @media (max-width: 600px) {
-            .q-text {
-                font-size: 1.25rem;
-            }
-            .option-item {
-                padding: 8px 14px;
-            }
-            .question-card {
-                padding: 1.4rem;
-            }
+            .card { padding: 1.2rem; }
+            .hero h1 { font-size: 1.6rem; }
+            .q-text { font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
-<div class="test-container" id="app"></div>
+<div class="app-container" id="app"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
 <script>
+    // 完整题库（50题）
+    const FULL_QUESTIONS = [
+        { text: "“我每次想买运动鞋，脑海中第一个跳出Nike。”", correct: ["品牌存在感","品牌知名度"], explanation: "未提示下首位回忆 → 品牌存在感(心智触发) + 知名度(认识程度)。" },
+        { text: "“麦当劳在某城市所有公交站台贴满了汉堡海报，一个月展示3万次。”", correct: ["品牌曝光率"], explanation: "纯粹物理触达频率/次数，属于曝光率。" },
+        { text: "“很多人觉得沃尔沃代表‘安全’。”", correct: ["品牌形象","品牌联想"], explanation: "消费者心智中的属性联结，为核心联想与形象。" },
+        { text: "“一个从未听过‘完美日记’的人，在小红书刷到3次该品牌的笔记。”", correct: ["品牌曝光率"], explanation: "被动高频看到，尚未形成形象或存在感，曝光率为主。" },
+        { text: "“星巴克的绿色双尾美人鱼logo让人联想到‘第三空间’和咖啡师叫名字的服务。”", correct: ["品牌联想","品牌形象"], explanation: "Logo激发场景与体验认知，属于联想与形象塑造。" },
+        { text: "“可口可乐在超市货架正面陈列，顾客每次路过都能看到。”", correct: ["品牌曝光率"], explanation: "物理位置频次，增加视觉曝光。" },
+        { text: "“海天酱油在老一辈人心里是‘传统、实惠、放心’。”", correct: ["品牌形象","品牌联想"], explanation: "主观整体印象与属性关联。" },
+        { text: "“某新品牌在抖音一天投放500条达人视频，播放量2000万。”", correct: ["品牌曝光率"], explanation: "大规模内容分发 → 曝光量级。" },
+        { text: "“即使竞品打折，很多人仍愿原价买苹果手机。”", correct: ["品牌资产"], explanation: "溢价支付意愿 + 忠诚度 = 品牌资产。" },
+        { text: "“提起‘高端电动车’，用户首先说‘特斯拉’而不是蔚来或小鹏。”", correct: ["品牌存在感","品牌知名度"], explanation: "品类首想 = 存在感 + 高知名度。" },
+        { text: "“消费者在加油站口渴时，首先想到的是‘农夫山泉’而不是其他水。”", correct: ["品牌存在感"], explanation: "场景触发心智关联 → 品牌存在感极强。" },
+        { text: "“小红书里关于‘完美日记动物眼影盘’的讨论经常附带‘国货之光’这个词。”", correct: ["品牌联想","品牌形象"], explanation: "口碑标签化联想，构成形象的一部分。" },
+        { text: "“你在机场看到华为巨大的LED广告屏，每隔10秒循环一次。”", correct: ["品牌曝光率"], explanation: "高频率展示，曝光率行为。" },
+        { text: "“无印良品的设计风格让用户觉得‘极简、环保、有质感’。”", correct: ["品牌形象"], explanation: "风格整体印象，属于品牌形象。" },
+        { text: "“一条拼多多砍价链接在100个微信群里被转发。”", correct: ["品牌曝光率"], explanation: "分享带来的覆盖次数，曝光率。" },
+        { text: "“小孩看到金色的‘M’就说要吃汉堡。”", correct: ["品牌存在感","品牌知名度"], explanation: "符号快速识别 = 存在感 + 知名度。" },
+        { text: "“戴森吸尘器用户觉得‘贵但值得，科技感很强’。”", correct: ["品牌形象","品牌联想"], explanation: "用户感知的价值与技术印象。" },
+        { text: "“双十一期间，李佳琦直播间连续7天出现某个美妆品牌。”", correct: ["品牌曝光率"], explanation: "连续高频露出，增加曝光。" },
+        { text: "“你从来没有刻意关注过金霸王电池，但买电池时却下意识拿了‘那只铜头电池’。”", correct: ["品牌存在感"], explanation: "潜意识选择，基于心智触发。" },
+        { text: "“宜家样板间让人产生‘这才是家的感觉’的情绪共鸣。”", correct: ["品牌形象"], explanation: "情感体验塑造品牌形象。" },
+        { text: "“疫情期间，某消毒液品牌向医院捐赠物资，新闻联播报道一次，微博热搜3小时。”", correct: ["品牌曝光率","品牌信任/好感"], explanation: "曝光率 + 善举带来信任感。" },
+        { text: "“老干妈在国外成为‘奢侈品辣酱’，国内却仍然是‘平价国民女神’。”", correct: ["品牌形象"], explanation: "不同市场认知差异 → 形象定位不同。" },
+        { text: "“你刷朋友圈看到朋友晒‘喜茶新包装’照片，包装上logo明显。”", correct: ["品牌曝光率"], explanation: "社交展示间接曝光。" },
+        { text: "“用户投诉某品牌后，该品牌连夜在微博道歉并公布赔偿方案，评论区说‘态度诚恳’。”", correct: ["品牌信任/好感","品牌形象"], explanation: "危机回应影响信任与形象。" },
+        { text: "“拼多多在春晚发20亿红包，当晚下载量登顶。”", correct: ["品牌曝光率","品牌知名度"], explanation: "超级曝光拉动知名度。" },
+        { text: "“七度空间卫生巾包装上写着‘纯棉表层’，让人联想到柔软安全。”", correct: ["品牌联想","品牌形象"], explanation: "属性与情感联想。" },
+        { text: "“Zara在一线城市核心商圈开店，橱窗模特每周换两次新款。”", correct: ["品牌曝光率","品牌存在感"], explanation: "实体触点曝光 + 消费者路过触发存在。" },
+        { text: "“你用滴滴打车时，App弹窗显示‘你常去的商场使用美团的充电宝’。”", correct: ["品牌曝光率"], explanation: "交叉推广，增加品牌出现频次。" },
+        { text: "“格力空调广告语‘好空调，格力造’在电视上连续播放10年。”", correct: ["品牌曝光率","品牌知名度"], explanation: "长期高频传播建立知名度。" },
+        { text: "“你买不起保时捷，但你说‘保时捷的设计就是优雅和性能’。”", correct: ["品牌形象"], explanation: "主观印象，无关购买。" },
+        { text: "“B站用户流行用‘奥利给’梗，但很多人不知道这个梗来自一个草根网红，而非品牌。”", correct: ["品牌曝光率"], explanation: "无关性曝光，对原品牌无形象提升。" },
+        { text: "“元气森林在便利店冰柜里占据两层货架，且瓶身‘気’字颜色醒目。”", correct: ["品牌曝光率","品牌存在感"], explanation: "货架份额+视觉触发购买场景。" },
+        { text: "“你在知乎搜‘降噪耳机’，前排回答全是索尼XM4的对比评测。”", correct: ["品牌存在感","品牌曝光率"], explanation: "搜索联想 + 高频内容曝光。" },
+        { text: "“海底捞服务生给你送零食、帮你下菜、唱生日歌，让你觉得‘被宠’。”", correct: ["品牌形象","品牌信任/好感"], explanation: "服务体验构建形象与好感。" },
+        { text: "“某国产奶粉请奥运冠军代言，广告语改为‘冠军妈妈的选择’。”", correct: ["品牌形象","品牌信任/好感"], explanation: "信任迁移强化形象。" },
+        { text: "“你的浏览器常弹窗‘澳门赌场广告’，但你从没点过。”", correct: ["品牌曝光率"], explanation: "无效高频曝光。" },
+        { text: "“茅台在年轻人中‘酒桌硬通货’的形象开始变成‘理财产品’。”", correct: ["品牌形象"], explanation: "认知属性演变属于形象变化。" },
+        { text: "“闲鱼上有人卖‘肯德基玩具收藏全套’，标价翻10倍。”", correct: ["品牌资产"], explanation: "衍生价值溢价 → 品牌资产体现。" },
+        { text: "“Tesla没有传统广告，但马斯克每发一条推特，媒体就免费报道一周。”", correct: ["品牌曝光率"], explanation: "公关免费曝光，曝光率大增。" },
+        { text: "“你妈妈每次买洗衣粉都认准‘雕牌’，说‘别的牌子洗不干净’。”", correct: ["品牌信任/好感","品牌资产"], explanation: "忠诚度+习惯购买 = 信任与资产价值。" },
+        { text: "“一个从未听说过的D2C品牌在Instagram上的#tag被用了5000次。”", correct: ["品牌曝光率"], explanation: "UGC带来的被动曝光。" },
+        { text: "“Chanel No.5的香水瓶设计被写入设计教科书，象征‘奢华经典’。”", correct: ["品牌形象","品牌联想"], explanation: "文化符号塑造形象与联想。" },
+        { text: "“你在电梯广告里听到‘找工作，跟老板谈’的BGM洗脑循环。”", correct: ["品牌曝光率"], explanation: "广告频次曝光。" },
+        { text: "“南方黑芝麻糊的怀旧广告片让70后想起童年，但00后觉得‘土’。”", correct: ["品牌形象"], explanation: "代际认知差异，形象的主观性。" },
+        { text: "“拼多多百亿补贴页面显示‘已有300万人购买此商品’。”", correct: ["品牌曝光率","品牌信任/好感"], explanation: "从众效应增加信任+曝光说服。" },
+        { text: "“用户在小红书上发布‘跟着ins博主买同款衣服’的笔记，博主标了品牌名。”", correct: ["品牌曝光率"], explanation: "种草内容曝光。" },
+        { text: "“你路过商场中庭的‘理想汽车’展台，销售邀请你试坐。”", correct: ["品牌曝光率","品牌存在感"], explanation: "实体接触 + 场景唤起注意。" },
+        { text: "“维他柠檬茶的包装上印着‘真茶真柠檬’，消费者觉得‘好喝又解腻’。”", correct: ["品牌联想","品牌形象"], explanation: "产品功能印象构成联想。" },
+        { text: "“你的手机输入法自动联想‘纵享丝滑’后面跟着‘德芙’。”", correct: ["品牌存在感"], explanation: "语义强关联 → 心智烙印极深。" },
+        { text: "“疫情期间，某本地烘焙品牌组织‘免费送面包给医护人员’活动，大众点评出现500条好评提及‘良心商家’。”", correct: ["品牌信任/好感","品牌形象"], explanation: "公益行为塑造信任与正向形象。" }
+    ];
+
     const CONCEPT_LIST = ["品牌形象", "品牌曝光率", "品牌存在感", "品牌知名度", "品牌联想", "品牌资产", "品牌信任/好感"];
     
-    const questionsData = [
-        { text: "“我每次想买运动鞋，脑海中第一个跳出Nike。”", options: CONCEPT_LIST, correct: ["品牌存在感","品牌知名度"], explanation: "未提示下首位回忆 → 品牌存在感(心智触发) + 知名度(认识程度)。" },
-        { text: "“麦当劳在某城市所有公交站台贴满了汉堡海报，一个月展示3万次。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "纯粹物理触达频率/次数，属于曝光率。" },
-        { text: "“很多人觉得沃尔沃代表‘安全’。”", options: CONCEPT_LIST, correct: ["品牌形象","品牌联想"], explanation: "消费者心智中的属性联结，为核心联想与形象。" },
-        { text: "“一个从未听过‘完美日记’的人，在小红书刷到3次该品牌的笔记。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "被动高频看到，尚未形成形象或存在感，曝光率为主。" },
-        { text: "“星巴克的绿色双尾美人鱼logo让人联想到‘第三空间’和咖啡师叫名字的服务。”", options: CONCEPT_LIST, correct: ["品牌联想","品牌形象"], explanation: "Logo激发场景与体验认知，属于联想与形象塑造。" },
-        { text: "“可口可乐在超市货架正面陈列，顾客每次路过都能看到。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "物理位置频次，增加视觉曝光。" },
-        { text: "“海天酱油在老一辈人心里是‘传统、实惠、放心’。”", options: CONCEPT_LIST, correct: ["品牌形象","品牌联想"], explanation: "主观整体印象与属性关联。" },
-        { text: "“某新品牌在抖音一天投放500条达人视频，播放量2000万。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "大规模内容分发 → 曝光量级。" },
-        { text: "“即使竞品打折，很多人仍愿原价买苹果手机。”", options: CONCEPT_LIST, correct: ["品牌资产"], explanation: "溢价支付意愿 + 忠诚度 = 品牌资产。" },
-        { text: "“提起‘高端电动车’，用户首先说‘特斯拉’而不是蔚来或小鹏。”", options: CONCEPT_LIST, correct: ["品牌存在感","品牌知名度"], explanation: "品类首想 = 存在感 + 高知名度。" },
-        { text: "“消费者在加油站口渴时，首先想到的是‘农夫山泉’而不是其他水。”", options: CONCEPT_LIST, correct: ["品牌存在感"], explanation: "场景触发心智关联 → 品牌存在感极强。" },
-        { text: "“小红书里关于‘完美日记动物眼影盘’的讨论经常附带‘国货之光’这个词。”", options: CONCEPT_LIST, correct: ["品牌联想","品牌形象"], explanation: "口碑标签化联想，构成形象的一部分。" },
-        { text: "“你在机场看到华为巨大的LED广告屏，每隔10秒循环一次。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "高频率展示，曝光率行为。" },
-        { text: "“无印良品的设计风格让用户觉得‘极简、环保、有质感’。”", options: CONCEPT_LIST, correct: ["品牌形象"], explanation: "风格整体印象，属于品牌形象。" },
-        { text: "“一条拼多多砍价链接在100个微信群里被转发。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "分享带来的覆盖次数，曝光率。" },
-        { text: "“小孩看到金色的‘M’就说要吃汉堡。”", options: CONCEPT_LIST, correct: ["品牌存在感","品牌知名度"], explanation: "符号快速识别 = 存在感 + 知名度。" },
-        { text: "“戴森吸尘器用户觉得‘贵但值得，科技感很强’。”", options: CONCEPT_LIST, correct: ["品牌形象","品牌联想"], explanation: "用户感知的价值与技术印象。" },
-        { text: "“双十一期间，李佳琦直播间连续7天出现某个美妆品牌。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "连续高频露出，增加曝光。" },
-        { text: "“你从来没有刻意关注过金霸王电池，但买电池时却下意识拿了‘那只铜头电池’。”", options: CONCEPT_LIST, correct: ["品牌存在感"], explanation: "潜意识选择，基于心智触发。" },
-        { text: "“宜家样板间让人产生‘这才是家的感觉’的情绪共鸣。”", options: CONCEPT_LIST, correct: ["品牌形象"], explanation: "情感体验塑造品牌形象。" },
-        { text: "“疫情期间，某消毒液品牌向医院捐赠物资，新闻联播报道一次，微博热搜3小时。”", options: CONCEPT_LIST, correct: ["品牌曝光率","品牌信任/好感"], explanation: "曝光率 + 善举带来信任感。" },
-        { text: "“老干妈在国外成为‘奢侈品辣酱’，国内却仍然是‘平价国民女神’。”", options: CONCEPT_LIST, correct: ["品牌形象"], explanation: "不同市场认知差异 → 形象定位不同。" },
-        { text: "“你刷朋友圈看到朋友晒‘喜茶新包装’照片，包装上logo明显。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "社交展示间接曝光。" },
-        { text: "“用户投诉某品牌后，该品牌连夜在微博道歉并公布赔偿方案，评论区说‘态度诚恳’。”", options: CONCEPT_LIST, correct: ["品牌信任/好感","品牌形象"], explanation: "危机回应影响信任与形象。" },
-        { text: "“拼多多在春晚发20亿红包，当晚下载量登顶。”", options: CONCEPT_LIST, correct: ["品牌曝光率","品牌知名度"], explanation: "超级曝光拉动知名度。" },
-        { text: "“七度空间卫生巾包装上写着‘纯棉表层’，让人联想到柔软安全。”", options: CONCEPT_LIST, correct: ["品牌联想","品牌形象"], explanation: "属性与情感联想。" },
-        { text: "“Zara在一线城市核心商圈开店，橱窗模特每周换两次新款。”", options: CONCEPT_LIST, correct: ["品牌曝光率","品牌存在感"], explanation: "实体触点曝光 + 消费者路过触发存在。" },
-        { text: "“你用滴滴打车时，App弹窗显示‘你常去的商场使用美团的充电宝’。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "交叉推广，增加品牌出现频次。" },
-        { text: "“格力空调广告语‘好空调，格力造’在电视上连续播放10年。”", options: CONCEPT_LIST, correct: ["品牌曝光率","品牌知名度"], explanation: "长期高频传播建立知名度。" },
-        { text: "“你买不起保时捷，但你说‘保时捷的设计就是优雅和性能’。”", options: CONCEPT_LIST, correct: ["品牌形象"], explanation: "主观印象，无关购买。" },
-        { text: "“B站用户流行用‘奥利给’梗，但很多人不知道这个梗来自一个草根网红，而非品牌。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "无关性曝光，对原品牌无形象提升。" },
-        { text: "“元气森林在便利店冰柜里占据两层货架，且瓶身‘気’字颜色醒目。”", options: CONCEPT_LIST, correct: ["品牌曝光率","品牌存在感"], explanation: "货架份额+视觉触发购买场景。" },
-        { text: "“你在知乎搜‘降噪耳机’，前排回答全是索尼XM4的对比评测。”", options: CONCEPT_LIST, correct: ["品牌存在感","品牌曝光率"], explanation: "搜索联想 + 高频内容曝光。" },
-        { text: "“海底捞服务生给你送零食、帮你下菜、唱生日歌，让你觉得‘被宠’。”", options: CONCEPT_LIST, correct: ["品牌形象","品牌信任/好感"], explanation: "服务体验构建形象与好感。" },
-        { text: "“某国产奶粉请奥运冠军代言，广告语改为‘冠军妈妈的选择’。”", options: CONCEPT_LIST, correct: ["品牌形象","品牌信任/好感"], explanation: "信任迁移强化形象。" },
-        { text: "“你的浏览器常弹窗‘澳门赌场广告’，但你从没点过。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "无效高频曝光。" },
-        { text: "“茅台在年轻人中‘酒桌硬通货’的形象开始变成‘理财产品’。”", options: CONCEPT_LIST, correct: ["品牌形象"], explanation: "认知属性演变属于形象变化。" },
-        { text: "“闲鱼上有人卖‘肯德基玩具收藏全套’，标价翻10倍。”", options: CONCEPT_LIST, correct: ["品牌资产"], explanation: "衍生价值溢价 → 品牌资产体现。" },
-        { text: "“Tesla没有传统广告，但马斯克每发一条推特，媒体就免费报道一周。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "公关免费曝光，曝光率大增。" },
-        { text: "“你妈妈每次买洗衣粉都认准‘雕牌’，说‘别的牌子洗不干净’。”", options: CONCEPT_LIST, correct: ["品牌信任/好感","品牌资产"], explanation: "忠诚度+习惯购买 = 信任与资产价值。" },
-        { text: "“一个从未听说过的D2C品牌在Instagram上的#tag被用了5000次。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "UGC带来的被动曝光。" },
-        { text: "“Chanel No.5的香水瓶设计被写入设计教科书，象征‘奢华经典’。”", options: CONCEPT_LIST, correct: ["品牌形象","品牌联想"], explanation: "文化符号塑造形象与联想。" },
-        { text: "“你在电梯广告里听到‘找工作，跟老板谈’的BGM洗脑循环。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "广告频次曝光。" },
-        { text: "“南方黑芝麻糊的怀旧广告片让70后想起童年，但00后觉得‘土’。”", options: CONCEPT_LIST, correct: ["品牌形象"], explanation: "代际认知差异，形象的主观性。" },
-        { text: "“拼多多百亿补贴页面显示‘已有300万人购买此商品’。”", options: CONCEPT_LIST, correct: ["品牌曝光率","品牌信任/好感"], explanation: "从众效应增加信任+曝光说服。" },
-        { text: "“用户在小红书上发布‘跟着ins博主买同款衣服’的笔记，博主标了品牌名。”", options: CONCEPT_LIST, correct: ["品牌曝光率"], explanation: "种草内容曝光。" },
-        { text: "“你路过商场中庭的‘理想汽车’展台，销售邀请你试坐。”", options: CONCEPT_LIST, correct: ["品牌曝光率","品牌存在感"], explanation: "实体接触 + 场景唤起注意。" },
-        { text: "“维他柠檬茶的包装上印着‘真茶真柠檬’，消费者觉得‘好喝又解腻’。”", options: CONCEPT_LIST, correct: ["品牌联想","品牌形象"], explanation: "产品功能印象构成联想。" },
-        { text: "“你的手机输入法自动联想‘纵享丝滑’后面跟着‘德芙’。”", options: CONCEPT_LIST, correct: ["品牌存在感"], explanation: "语义强关联 → 心智烙印极深。" },
-        { text: "“疫情期间，某本地烘焙品牌组织‘免费送面包给医护人员’活动，大众点评出现500条好评提及‘良心商家’。”", options: CONCEPT_LIST, correct: ["品牌信任/好感","品牌形象"], explanation: "公益行为塑造信任与正向形象。" }
-    ];
-    
+    // 随机抽取函数
+    function getRandomQuestions(n) {
+        const shuffled = [...FULL_QUESTIONS];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled.slice(0, n).map(q => ({
+            ...q,
+            options: [...CONCEPT_LIST]
+        }));
+    }
+
     new Vue({
         el: '#app',
         template: `
-            <div class="test-container">
-                <div class="progress-card">
-                    <div class="counter">第 {{ currentIndex+1 }} / {{ totalQuestions }} 题</div>
-                    <div class="score-box">✅ 得分: {{ userScore }} / {{ answeredCount }}</div>
+            <div>
+                <!-- 主页 -->
+                <div v-if="mode === 'home'" class="card">
+                    <div class="hero">
+                        <h1>📊 品牌营销概念测试</h1>
+                        <p>区分「品牌形象」「品牌曝光率」「品牌存在感」等易混概念</p>
+                        <div class="feature-list">
+                            <span class="feature-tag">🎲 每次随机10题</span>
+                            <span class="feature-tag">📱 通勤碎片时间</span>
+                            <span class="feature-tag">📝 错题本记录</span>
+                            <span class="feature-tag">💡 详细解析</span>
+                        </div>
+                        <button class="start-btn" @click="startNewQuiz">✨ 开始随机测试 ✨</button>
+                        <div class="info-text">
+                            ⚡ 共50道题库，每次随机抽取10题<br>
+                            📖 完成测试后自动记录错题，可反复开始新测试
+                        </div>
+                    </div>
                 </div>
 
-                <div v-if="!quizFinished">
-                    <div class="question-card">
-                        <div class="badge-hint">⚡ 可多选（根据概念匹配）</div>
+                <!-- 测试界面 -->
+                <div v-else-if="mode === 'quiz' && !quizFinished">
+                    <div class="progress-card">
+                        <div class="counter">第 {{ currentIndex+1 }} / {{ currentQuestions.length }} 题</div>
+                        <div class="score-box">✅ 得分: {{ userScore }} / {{ answeredCount }}</div>
+                        <button class="exit-btn" @click="exitToHome">🏠 退出</button>
+                    </div>
+                    <div class="card">
+                        <div class="badge-hint">⚡ 可多选（点击选项或文字）</div>
                         <div class="q-text">{{ currentQuestion.text }}</div>
                         <div class="options-area">
                             <div v-for="opt in currentQuestion.options" :key="opt" class="option-item" @click="toggleOption(opt)">
@@ -338,28 +394,28 @@
                         </div>
                         <div class="action-buttons">
                             <button @click="submitAnswer" :disabled="submitted">✓ 提交本题</button>
-                            <button class="secondary" @click="clearCurrent" :disabled="submitted">↺ 重置选项</button>
+                            <button class="secondary" @click="clearCurrent" :disabled="submitted">↺ 重置</button>
                         </div>
                         <div v-if="showFeedback" class="result-area" :class="{'correct-feedback': isCurrentCorrect, 'wrong-feedback': !isCurrentCorrect}">
-                            <strong>{{ isCurrentCorrect ? '✓ 回答正确' : '✗ 回答有误' }}</strong><br>
+                            <strong>{{ isCurrentCorrect ? '✓ 正确' : '✗ 错误' }}</strong><br>
                             <span>✅ 正确答案: {{ currentQuestion.correct.join('、') }}</span><br>
-                            <span>📘 解析: {{ currentQuestion.explanation }}</span>
+                            <span>📘 {{ currentQuestion.explanation }}</span>
                         </div>
                         <div v-if="showFeedback" class="nav-buttons">
                             <button @click="prevQuestion" :disabled="currentIndex === 0">◀ 上一题</button>
-                            <button @click="nextQuestion" :disabled="currentIndex === totalQuestions-1">下一题 ▶</button>
+                            <button @click="nextQuestion" :disabled="currentIndex === currentQuestions.length-1">下一题 ▶</button>
                         </div>
                     </div>
                 </div>
 
-                <div v-else class="final-score-card">
+                <!-- 成绩单 -->
+                <div v-else-if="mode === 'result'" class="card final-score-card">
                     <h2>🎉 测试完成 🎉</h2>
-                    <p style="font-size: 1.8rem; margin: 20px 0; font-weight: 700;">{{ userScore }} / {{ totalQuestions }}</p>
-                    <p>正确率: {{ Math.round(userScore/totalQuestions*100) }}%</p>
+                    <p style="font-size: 1.8rem; margin: 20px 0; font-weight: 700;">{{ userScore }} / {{ currentQuestions.length }}</p>
+                    <p>正确率: {{ Math.round(userScore/currentQuestions.length*100) }}%</p>
                     
-                    <!-- 错题本 -->
                     <div v-if="mistakeList.length > 0" class="mistake-list">
-                        <h3 style="margin-bottom: 16px; color:#bc5a2c;">📋 错题本（{{ mistakeList.length }} 道错题）</h3>
+                        <h3 style="margin-bottom: 16px; color:#bc5a2c;">📋 错题本（{{ mistakeList.length }} 道）</h3>
                         <div v-for="(mistake, idx) in mistakeList" :key="idx" class="mistake-item">
                             <div class="badge-mistake">第 {{ mistake.qNumber }} 题</div>
                             <div class="mistake-question">{{ mistake.questionText }}</div>
@@ -371,16 +427,20 @@
                         </div>
                     </div>
                     <div v-else style="margin-top: 24px; padding: 20px; background: #e8f5e9; border-radius: 28px;">
-                        🎉 太棒了！全对！没有一个错题，概念掌握非常扎实。
+                        🎉 太棒了！全对！概念掌握非常扎实。
                     </div>
                     
-                    <button class="reset-btn" @click="restartQuiz">🔄 重新开始</button>
+                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <button class="new-quiz-btn" @click="startNewQuiz">🎲 新的一组随机题</button>
+                        <button class="secondary" @click="exitToHome">🏠 返回主页</button>
+                    </div>
                 </div>
             </div>
         `,
         data() {
             return {
-                questions: questionsData,
+                mode: 'home', // home, quiz, result
+                currentQuestions: [],
                 currentIndex: 0,
                 userAnswers: [],
                 answerStatus: [],
@@ -388,24 +448,26 @@
                 selectedForCurrent: [],
                 showFeedback: false,
                 isCurrentCorrect: false,
-                quizFinished: false,
                 submitted: false
             };
         },
         computed: {
-            totalQuestions() { return this.questions.length; },
-            currentQuestion() { return this.questions[this.currentIndex]; },
-            answeredCount() { return this.userAnswers.filter(a => a !== undefined && a.length > 0).length; },
+            currentQuestion() {
+                return this.currentQuestions[this.currentIndex] || { options: [], text: '', correct: [] };
+            },
+            answeredCount() {
+                return this.userAnswers.filter(a => a !== undefined && a.length > 0).length;
+            },
             mistakeList() {
                 const mistakes = [];
-                for (let i = 0; i < this.questions.length; i++) {
+                for (let i = 0; i < this.currentQuestions.length; i++) {
                     if (this.answerStatus[i] === false) {
                         mistakes.push({
                             qNumber: i+1,
-                            questionText: this.questions[i].text,
+                            questionText: this.currentQuestions[i].text,
                             userAnswer: this.userAnswers[i] || [],
-                            correctAnswer: this.questions[i].correct,
-                            explanation: this.questions[i].explanation
+                            correctAnswer: this.currentQuestions[i].correct,
+                            explanation: this.currentQuestions[i].explanation
                         });
                     }
                 }
@@ -429,6 +491,18 @@
             }
         },
         methods: {
+            startNewQuiz() {
+                this.currentQuestions = getRandomQuestions(10);
+                this.currentIndex = 0;
+                this.userAnswers = new Array(10).fill(undefined);
+                this.answerStatus = new Array(10).fill(undefined);
+                this.userScore = 0;
+                this.selectedForCurrent = [];
+                this.showFeedback = false;
+                this.isCurrentCorrect = false;
+                this.submitted = false;
+                this.mode = 'quiz';
+            },
             toggleOption(opt) {
                 if (this.submitted) return;
                 const idx = this.selectedForCurrent.indexOf(opt);
@@ -441,17 +515,17 @@
             },
             submitAnswer() {
                 if (this.submitted) {
-                    alert("本题已经提交过了，可以进入下一题");
+                    alert("本题已提交，请继续下一题");
                     return;
                 }
                 if (this.selectedForCurrent.length === 0) {
-                    alert("请至少选择一个选项，本题可能是多选。");
+                    alert("请至少选择一个选项");
                     return;
                 }
-                const currentQ = this.currentQuestion;
+                const q = this.currentQuestion;
                 const userSorted = [...this.selectedForCurrent].sort();
-                const correctSorted = [...currentQ.correct].sort();
-                const isCorrect = userSorted.length === correctSorted.length && userSorted.every((val, idx) => val === correctSorted[idx]);
+                const correctSorted = [...q.correct].sort();
+                const isCorrect = userSorted.length === correctSorted.length && userSorted.every((v,i) => v === correctSorted[i]);
                 
                 this.userAnswers[this.currentIndex] = [...this.selectedForCurrent];
                 this.answerStatus[this.currentIndex] = isCorrect;
@@ -460,36 +534,30 @@
                 this.submitted = true;
                 
                 let newScore = 0;
-                for (let i = 0; i < this.totalQuestions; i++) {
+                for (let i = 0; i < this.currentQuestions.length; i++) {
                     if (this.answerStatus[i] === true) newScore++;
                 }
                 this.userScore = newScore;
                 
-                const allDone = this.answerStatus.length === this.totalQuestions && this.answerStatus.every(status => status !== undefined);
-                if (allDone) this.quizFinished = true;
+                const allDone = this.answerStatus.every(s => s !== undefined);
+                if (allDone) this.mode = 'result';
             },
             nextQuestion() {
-                if (this.currentIndex < this.totalQuestions - 1) {
+                if (this.currentIndex < this.currentQuestions.length - 1) {
                     this.currentIndex++;
                 } else {
-                    const allAnswered = this.answerStatus.length === this.totalQuestions && this.answerStatus.every(s => s !== undefined);
-                    if (allAnswered) this.quizFinished = true;
-                    else alert("请先完成当前未答题目。");
+                    const allDone = this.answerStatus.every(s => s !== undefined);
+                    if (allDone) this.mode = 'result';
+                    else alert("请先完成当前题目");
                 }
             },
             prevQuestion() {
                 if (this.currentIndex > 0) this.currentIndex--;
             },
-            restartQuiz() {
-                this.currentIndex = 0;
-                this.userAnswers = [];
-                this.answerStatus = [];
-                this.userScore = 0;
-                this.selectedForCurrent = [];
-                this.showFeedback = false;
-                this.isCurrentCorrect = false;
-                this.quizFinished = false;
-                this.submitted = false;
+            exitToHome() {
+                if (confirm("返回主页会丢失当前测试进度，确定吗？")) {
+                    this.mode = 'home';
+                }
             }
         }
     });
