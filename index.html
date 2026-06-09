@@ -248,7 +248,7 @@
                         <div class="nav-buttons">
                             <button @click="prevQuestion" :disabled="currentIndex === 0">◀ 上一题</button>
                             <button v-if="currentIndex < totalQuestions-1" @click="nextQuestion" :disabled="!submitted">下一题 ▶</button>
-                            <button v-if="currentIndex === totalQuestions-1 && !quizCompleted" @click="finishQuiz" :disabled="!submitted" class="complete-btn">📊 完成测试</button>
+                            <!-- 移除手动完成按钮，改为自动检测 -->
                         </div>
                     </div>
                 </div>
@@ -291,20 +291,12 @@
                 showFeedback: false,
                 isCurrentCorrect: false,
                 submitted: false,
-                // 手动追踪分数，避免 computed 缓存问题
                 totalScore: 0,
                 correctCount: 0
             };
         },
         computed: {
             totalQuestions() { return this.currentQuestions.length; },
-            quizCompleted() {
-                if (this.totalQuestions === 0) return false;
-                for (let i = 0; i < this.totalQuestions; i++) {
-                    if (this.answerStatus[i] === undefined) return false;
-                }
-                return true;
-            },
             currentQuestion() {
                 if (this.currentQuestions.length === 0) return { options: [], text: '', correct: [] };
                 return this.currentQuestions[this.currentIndex] || { options: [], text: '', correct: [] };
@@ -323,6 +315,14 @@
                     }
                 }
                 return mistakes;
+            },
+            // 检查是否所有题目都已作答
+            allAnswered() {
+                if (this.totalQuestions === 0) return false;
+                for (let i = 0; i < this.totalQuestions; i++) {
+                    if (this.answerStatus[i] === undefined) return false;
+                }
+                return true;
             }
         },
         watch: {
@@ -339,6 +339,12 @@
                     this.showFeedback = false;
                     this.isCurrentCorrect = false;
                     this.submitted = false;
+                }
+            },
+            // 监听 allAnswered，一旦全部答完自动跳转成绩单
+            allAnswered(newVal) {
+                if (newVal && this.mode === 'quiz') {
+                    this.mode = 'result';
                 }
             }
         },
@@ -380,18 +386,25 @@
                 const correctSorted = [...q.correct].sort();
                 const isCorrect = userSorted.length === correctSorted.length && userSorted.every((v,i) => v === correctSorted[i]);
                 
-                // 保存答案
                 this.userAnswers[this.currentIndex] = [...this.selectedForCurrent];
                 this.answerStatus[this.currentIndex] = isCorrect;
                 this.showFeedback = true;
                 this.isCurrentCorrect = isCorrect;
                 this.submitted = true;
                 
-                // 更新分数（每题10分）
                 if (isCorrect) {
                     this.correctCount++;
                     this.totalScore = this.correctCount * 10;
                 }
+                
+                // 自动跳到下一题（如果不是最后一题）
+                if (this.currentIndex < this.totalQuestions - 1) {
+                    // 延迟一点跳转，让用户看到反馈
+                    setTimeout(() => {
+                        this.currentIndex++;
+                    }, 500);
+                }
+                // 如果是最后一题，watch allAnswered 会自动跳转成绩单
             },
             nextQuestion() {
                 if (this.currentIndex < this.totalQuestions - 1) {
@@ -400,13 +413,6 @@
             },
             prevQuestion() {
                 if (this.currentIndex > 0) this.currentIndex--;
-            },
-            finishQuiz() {
-                if (this.quizCompleted) {
-                    this.mode = 'result';
-                } else {
-                    alert("请先完成所有题目再提交");
-                }
             },
             exitToHome() {
                 if (confirm("返回主页会丢失当前测试进度，确定吗？")) {
