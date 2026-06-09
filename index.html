@@ -29,7 +29,6 @@
         .start-btn { background: #2c7da0; color: white; border: none; padding: 14px 40px; font-size: 1.2rem; font-weight: 600; border-radius: 60px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(44,125,160,0.3); margin-top: 0.5rem; }
         .start-btn:hover { background: #1f607e; transform: translateY(-2px); }
         
-        /* 概念速查表样式 */
         .recap-section {
             margin-top: 2rem;
             padding-top: 1.5rem;
@@ -200,11 +199,10 @@
                             <span class="feature-tag">📱 通勤碎片时间</span>
                             <span class="feature-tag">📝 错题本记录</span>
                             <span class="feature-tag">💡 权威解析</span>
-                            <span class="feature-tag">✅ 答案经专业校准</span>
+                            <span class="feature-tag">✅ 每题10分</span>
                         </div>
                         <button class="start-btn" @click="startNewQuiz">✨ 开始随机测试 ✨</button>
                         
-                        <!-- 概念速查表 Recap -->
                         <div class="recap-section">
                             <div class="recap-title">
                                 <span>📖</span> 概念速查表 <span style="font-size:0.75rem; font-weight:normal; color:#6c86a0;">（答题前先复习）</span>
@@ -226,11 +224,11 @@
                 <div v-else-if="mode === 'quiz'">
                     <div class="progress-card">
                         <div class="counter">第 {{ currentIndex+1 }} / {{ totalQuestions }} 题</div>
-                        <div class="score-box">✅ 得分: {{ computedCorrectCount }} / {{ computedAnsweredCount }}</div>
+                        <div class="score-box">💰 得分: {{ totalScore }} 分</div>
                         <button class="exit-btn" @click="exitToHome">🏠 退出</button>
                     </div>
                     <div class="card">
-                        <div class="badge-hint">⚡ 可多选（点击选项或文字）</div>
+                        <div class="badge-hint">⚡ 可多选（每题10分，答对得分）</div>
                         <div class="q-text">{{ currentQuestion.text }}</div>
                         <div class="options-area">
                             <div v-for="opt in currentQuestion.options" :key="opt" class="option-item" @click="toggleOption(opt)">
@@ -243,7 +241,7 @@
                             <button class="secondary" @click="clearCurrent" :disabled="submitted">↺ 重置</button>
                         </div>
                         <div v-if="showFeedback" class="result-area" :class="{'correct-feedback': isCurrentCorrect, 'wrong-feedback': !isCurrentCorrect}">
-                            <strong>{{ isCurrentCorrect ? '✓ 正确' : '✗ 错误' }}</strong><br>
+                            <strong>{{ isCurrentCorrect ? '✓ 正确 +10分' : '✗ 错误 得0分' }}</strong><br>
                             <span>✅ 正确答案: {{ currentQuestion.correct.join('、') }}</span><br>
                             <span>📘 {{ currentQuestion.explanation }}</span>
                         </div>
@@ -258,8 +256,8 @@
                 <!-- 成绩单 -->
                 <div v-else-if="mode === 'result'" class="card final-score-card">
                     <h2>🎉 测试完成 🎉</h2>
-                    <p style="font-size: 1.8rem; margin: 20px 0; font-weight: 700;">{{ computedCorrectCount }} / {{ totalQuestions }}</p>
-                    <p>正确率: {{ Math.round(computedCorrectCount/totalQuestions*100) }}%</p>
+                    <p style="font-size: 2rem; margin: 20px 0; font-weight: 700;">{{ totalScore }} / 100 分</p>
+                    <p>答对 {{ correctCount }} / {{ totalQuestions }} 题，每题10分</p>
                     
                     <div v-if="mistakeList.length > 0" class="mistake-list">
                         <h3 style="margin-bottom: 16px; color:#bc5a2c;">📋 错题本（{{ mistakeList.length }} 道）</h3>
@@ -273,7 +271,7 @@
                             </div>
                         </div>
                     </div>
-                    <div v-else style="margin-top: 24px; padding: 20px; background: #e8f5e9; border-radius: 28px;">🎉 太棒了！全对！概念掌握非常扎实。</div>
+                    <div v-else style="margin-top: 24px; padding: 20px; background: #e8f5e9; border-radius: 28px;">🎉 太棒了！全对！概念掌握非常扎实！满分100分！</div>
                     
                     <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
                         <button class="new-quiz-btn" @click="startNewQuiz">🎲 新的一组随机题</button>
@@ -292,25 +290,14 @@
                 selectedForCurrent: [],
                 showFeedback: false,
                 isCurrentCorrect: false,
-                submitted: false
+                submitted: false,
+                // 手动追踪分数，避免 computed 缓存问题
+                totalScore: 0,
+                correctCount: 0
             };
         },
         computed: {
             totalQuestions() { return this.currentQuestions.length; },
-            computedAnsweredCount() {
-                let count = 0;
-                for (let i = 0; i < this.answerStatus.length; i++) {
-                    if (this.answerStatus[i] !== undefined) count++;
-                }
-                return count;
-            },
-            computedCorrectCount() {
-                let count = 0;
-                for (let i = 0; i < this.answerStatus.length; i++) {
-                    if (this.answerStatus[i] === true) count++;
-                }
-                return count;
-            },
             quizCompleted() {
                 if (this.totalQuestions === 0) return false;
                 for (let i = 0; i < this.totalQuestions; i++) {
@@ -365,6 +352,8 @@
                 this.showFeedback = false;
                 this.isCurrentCorrect = false;
                 this.submitted = false;
+                this.totalScore = 0;
+                this.correctCount = 0;
                 this.mode = 'quiz';
             },
             toggleOption(opt) {
@@ -391,11 +380,18 @@
                 const correctSorted = [...q.correct].sort();
                 const isCorrect = userSorted.length === correctSorted.length && userSorted.every((v,i) => v === correctSorted[i]);
                 
+                // 保存答案
                 this.userAnswers[this.currentIndex] = [...this.selectedForCurrent];
                 this.answerStatus[this.currentIndex] = isCorrect;
                 this.showFeedback = true;
                 this.isCurrentCorrect = isCorrect;
                 this.submitted = true;
+                
+                // 更新分数（每题10分）
+                if (isCorrect) {
+                    this.correctCount++;
+                    this.totalScore = this.correctCount * 10;
+                }
             },
             nextQuestion() {
                 if (this.currentIndex < this.totalQuestions - 1) {
