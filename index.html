@@ -19,7 +19,7 @@
         }
 
         .test-container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
@@ -177,12 +177,12 @@
         }
 
         .correct-feedback {
-            color: #1f6e43;
-            font-weight: 500;
+            border-left-color: #2c8c5a;
+            background: #e6f4ed;
         }
-
         .wrong-feedback {
-            color: #bc5a2c;
+            border-left-color: #d45a4a;
+            background: #fef2f0;
         }
 
         .final-score-card {
@@ -206,6 +206,44 @@
             gap: 12px;
         }
 
+        /* 错题本样式 */
+        .mistake-list {
+            text-align: left;
+            margin-top: 24px;
+            max-height: 500px;
+            overflow-y: auto;
+            border-top: 2px solid #e2edf2;
+            padding-top: 20px;
+        }
+        .mistake-item {
+            background: #fff8f0;
+            border-left: 4px solid #d45a4a;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .mistake-question {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #bc5a2c;
+        }
+        .mistake-detail {
+            font-size: 0.85rem;
+            color: #4a5568;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        .badge-mistake {
+            background: #d45a4a20;
+            color: #bc5a2c;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
         @media (max-width: 600px) {
             .q-text {
                 font-size: 1.25rem;
@@ -220,13 +258,10 @@
     </style>
 </head>
 <body>
-<div class="test-container" id="app">
-    <!-- 动态内容由vue渲染 -->
-</div>
+<div class="test-container" id="app"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2.7.14/dist/vue.js"></script>
 <script>
-    // 概念列表
     const CONCEPT_LIST = ["品牌形象", "品牌曝光率", "品牌存在感", "品牌知名度", "品牌联想", "品牌资产", "品牌信任/好感"];
     
     const questionsData = [
@@ -310,7 +345,6 @@
                             <span>✅ 正确答案: {{ currentQuestion.correct.join('、') }}</span><br>
                             <span>📘 解析: {{ currentQuestion.explanation }}</span>
                         </div>
-                        <!-- 明显且强制性的下一题按钮 -->
                         <div v-if="showFeedback" class="nav-buttons">
                             <button @click="prevQuestion" :disabled="currentIndex === 0">◀ 上一题</button>
                             <button @click="nextQuestion" :disabled="currentIndex === totalQuestions-1">下一题 ▶</button>
@@ -322,15 +356,24 @@
                     <h2>🎉 测试完成 🎉</h2>
                     <p style="font-size: 1.8rem; margin: 20px 0; font-weight: 700;">{{ userScore }} / {{ totalQuestions }}</p>
                     <p>正确率: {{ Math.round(userScore/totalQuestions*100) }}%</p>
-                    <div style="background:#eef2f7; padding: 16px; border-radius: 32px; text-align: left;">
-                        <p><strong>📌 概念速记小贴士</strong></p>
-                        <p>▪ 品牌形象 = 主观印象/个性/价值观<br>
-                        ▪ 品牌曝光率 = 出现次数/频率/媒介触达<br>
-                        ▪ 品牌存在感 = 场景触发/心智唤醒/品类联想<br>
-                        ▪ 品牌资产 = 溢价/忠诚/品牌带来的商业价值<br>
-                        ▪ 品牌联想 = 属性/情感绑定<br>
-                        ▪ 品牌信任/好感 = 可靠性/好感度</p>
+                    
+                    <!-- 错题本 -->
+                    <div v-if="mistakeList.length > 0" class="mistake-list">
+                        <h3 style="margin-bottom: 16px; color:#bc5a2c;">📋 错题本（{{ mistakeList.length }} 道错题）</h3>
+                        <div v-for="(mistake, idx) in mistakeList" :key="idx" class="mistake-item">
+                            <div class="badge-mistake">第 {{ mistake.qNumber }} 题</div>
+                            <div class="mistake-question">{{ mistake.questionText }}</div>
+                            <div class="mistake-detail">
+                                <span style="color:#c0392b;">✗ 你的答案：</span> {{ mistake.userAnswer.join('、') || '未作答' }}<br>
+                                <span style="color:#27ae60;">✓ 正确答案：</span> {{ mistake.correctAnswer.join('、') }}<br>
+                                <span style="color:#2c7da0;">📘 解析：</span> {{ mistake.explanation }}
+                            </div>
+                        </div>
                     </div>
+                    <div v-else style="margin-top: 24px; padding: 20px; background: #e8f5e9; border-radius: 28px;">
+                        🎉 太棒了！全对！没有一个错题，概念掌握非常扎实。
+                    </div>
+                    
                     <button class="reset-btn" @click="restartQuiz">🔄 重新开始</button>
                 </div>
             </div>
@@ -352,11 +395,25 @@
         computed: {
             totalQuestions() { return this.questions.length; },
             currentQuestion() { return this.questions[this.currentIndex]; },
-            answeredCount() { return this.userAnswers.filter(a => a !== undefined && a.length > 0).length; }
+            answeredCount() { return this.userAnswers.filter(a => a !== undefined && a.length > 0).length; },
+            mistakeList() {
+                const mistakes = [];
+                for (let i = 0; i < this.questions.length; i++) {
+                    if (this.answerStatus[i] === false) {
+                        mistakes.push({
+                            qNumber: i+1,
+                            questionText: this.questions[i].text,
+                            userAnswer: this.userAnswers[i] || [],
+                            correctAnswer: this.questions[i].correct,
+                            explanation: this.questions[i].explanation
+                        });
+                    }
+                }
+                return mistakes;
+            }
         },
         watch: {
             currentIndex(newIdx) {
-                // 重置提交状态
                 this.submitted = false;
                 if (this.userAnswers[newIdx]) {
                     this.selectedForCurrent = [...this.userAnswers[newIdx]];
